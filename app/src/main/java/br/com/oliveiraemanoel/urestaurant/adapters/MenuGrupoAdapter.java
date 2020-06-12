@@ -9,18 +9,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.models.Menu;
+import br.com.oliveiraemanoel.urestaurant.viewmodel.MenuViewModel;
+import br.com.oliveiraemanoel.urestaurant.views.CardapioActivity;
 
 public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.ViewHolder> {
 
     private List<Menu> groupList;
     private Context context;
     private int selected=0;
+    private int lastSelected=0;
 
     public MenuGrupoAdapter(List<Menu> groupList, Context context) {
         this.groupList = groupList;
@@ -30,7 +30,8 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.menu_group,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
 
@@ -41,34 +42,32 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.tvGroupName.setText(groupList.get(position).getName());
-       /* holder.tvGroupName.setOnClickListener(new View.OnClickListener() {
+        if ((position == selected)) {
+            holder.divider.setVisibility(View.VISIBLE);
+        } else {
+            holder.divider.setVisibility(View.INVISIBLE);
+        }
+        holder.tvGroupName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    selected=position;
-                Log.d("POSITION","seleted" + position);
-                Log.d("POSITION","OldPosition" +  holder.getAdapterPosition());
-               // holder.tvGroupName.setTextColor(0xff0099cc);
-                if (holder.divider.getVisibility()==View.VISIBLE){
-                    holder.divider.setVisibility(View.INVISIBLE);
-                    //holder.getOldPosition();
-                    notifyDataSetChanged();
-                }else{
-                    holder.divider.setVisibility(View.VISIBLE);
-                }
+                //update item adapter==>todo change this to work with livedata
+                MenuViewModel.index4ItemRecyclerList=position;
+                CardapioActivity.updateAdapter(true);
 
-                //setar qual item do menu deve ser exibido
+                //Save the position of the last selected item
+                lastSelected = selected;
+                //Save the position of the current selected item
+                selected = position;
 
-            }
-        });*/
+                //This update the last item selected
+                notifyItemChanged(lastSelected);
 
-        holder.tvGroupName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    holder.divider.setVisibility(View.VISIBLE);
-                }
+                //This update the item selected
+                notifyItemChanged(selected);
+
             }
         });
+
     }
 
     @Override

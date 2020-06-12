@@ -2,16 +2,20 @@ package br.com.oliveiraemanoel.urestaurant.models;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import java.util.Date;
 import java.util.List;
+
+import br.com.oliveiraemanoel.urestaurant.repositories.databases.RoomTypeConverters;
 
 @Entity
 public class Cart {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int userId;
-   // private List<Orderr> ordemList;
+    @TypeConverters(RoomTypeConverters.class)
+    private List<Orderr> ordemList;
     private int totalItems;
     private double totalValue;
     private Date date;
@@ -19,6 +23,14 @@ public class Cart {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setOrdemList(List<Orderr> ordemList) {
+        this.ordemList = ordemList;
+    }
+
+    public List<Orderr> getOrdemList() {
+        return ordemList;
     }
 
     public int getId() {

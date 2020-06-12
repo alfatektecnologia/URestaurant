@@ -21,6 +21,9 @@ public interface ProductDAO {
     @Query("SELECT * FROM Product WHERE id = :id")
     public List<Product> getProductById(int id);
 
+    @Query("SELECT * FROM Product WHERE groupId =  :groupID")
+    public List<Product> getProductByGroupId(int groupID);
+
     @Insert(onConflict = REPLACE)
     public void insert(Product product);
 

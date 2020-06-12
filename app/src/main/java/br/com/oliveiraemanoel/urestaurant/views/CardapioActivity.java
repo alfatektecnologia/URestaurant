@@ -1,11 +1,14 @@
 package br.com.oliveiraemanoel.urestaurant.views;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.adapters.MenuGrupoAdapter;
 import br.com.oliveiraemanoel.urestaurant.adapters.MenuItemAdapter;
+import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.Menu;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
 import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
@@ -27,11 +31,13 @@ import retrofit2.Response;
 public class CardapioActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    RecyclerView itemRecycler;
+    private static RecyclerView itemRecycler;
     MenuGrupoAdapter adapter;
-    MenuItemAdapter itemAdapter;
-    private List<Menu> groupList = new ArrayList<>();
-    private List<Menu.Item> itemList = new ArrayList<>();
+    private static MenuItemAdapter itemAdapter;
+    private static Context context;
+    private static List<List<Item>> groupItemList = new ArrayList<>();
+    private List<List<Item>> itemList = new ArrayList<>();
+
 
 
 
@@ -39,7 +45,7 @@ public class CardapioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context = getApplicationContext();
         getSupportActionBar().setTitle(R.string.mainTitle);
 
         recyclerView = findViewById(R.id.rvMenuGrupo);
@@ -47,25 +53,58 @@ public class CardapioActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
 
         itemRecycler = findViewById(R.id.rvMenuItems);
+
         itemRecycler.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
 
         MenuViewModel menuViewModel = ViewModelProviders.of(this).get(MenuViewModel.class);
 
         menuViewModel.getMenu().observe(this, new Observer<List<Menu>>() {
+
             @Override
             public void onChanged(List<Menu> menus) {
-                Log.d("MAIN_ACTIVY","MENU_SIZE= " +menus.size());
+                Log.d("MAIN_ACTIVITY","MENU_SIZE= " +menus.size());
 
                adapter = new MenuGrupoAdapter(menus,getApplicationContext());
                recyclerView.setAdapter(adapter);
 
-               itemAdapter = new MenuItemAdapter(getApplicationContext(),menus.get(0).getItems());
-               itemRecycler.setAdapter(itemAdapter);
+               if(menus.size()>0) {
+                   //adding items of each group to list of items
+                   for (int i = 0; i < menus.size(); i++) {
+                       itemList.add(i, menus.get(i).getItems());
+                   }
+
+                   //creating a list of items by group
+                   int x = -1;
+                   for (List<Item> listList : itemList) {
+                       x++;
+                       groupItemList.add(x, listList);
+
+                   }
+               }
+
+                if(groupItemList.size()>0){
+                    updateAdapter(true);
+                }
+
 
             }
+
         });
 
 
 
+
+    }
+    public static void updateAdapter(boolean adapter){
+        if(adapter)
+        { //setting group 0(burguers) as default to show items
+
+                itemAdapter = new MenuItemAdapter(context,
+                        groupItemList.get(MenuViewModel.index4ItemRecyclerList));
+                itemRecycler.setAdapter(itemAdapter);
+                itemAdapter.notifyDataSetChanged();
+
+
+            }
     }
 }

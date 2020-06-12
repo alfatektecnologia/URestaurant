@@ -1,15 +1,16 @@
 package br.com.oliveiraemanoel.urestaurant.viewmodel;
 
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.oliveiraemanoel.urestaurant.adapters.MenuItemAdapter;
+import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.Menu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
@@ -22,12 +23,16 @@ import retrofit2.Retrofit;
 public class MenuViewModel extends ViewModel {
 
     private List<Menu> mMenuList = new ArrayList<>();
-    private List<Menu.Item> mMenuListItem = new ArrayList<>();
+    private List<Menu> mMenuListItem = new ArrayList<>();
     private List<Restaurant> restaurantList = new ArrayList<>();
-
+    List<Item> itemList = new ArrayList<>();
     //data that will be mutable asynchronously
     private MutableLiveData<List<Menu>> listMutableLiveData;
     private MutableLiveData<List<Restaurant>> listMutableLiveDataRestaurant;
+    private MutableLiveData<List<Item>> listMutableLiveDataMenuItem;
+    private MenuItemAdapter itemAdapter;
+
+    public static int index4ItemRecyclerList = 0;//default value
 
     //method to get the menu data
     public LiveData<List<Menu>> getMenu(){
@@ -39,6 +44,20 @@ public class MenuViewModel extends ViewModel {
         }
 
         return listMutableLiveData;
+    }
+
+
+
+    //method to get the menuItem data
+    public LiveData<List<Item>> getMenuItem(){
+        //check if mutablelist has data
+        if(listMutableLiveDataMenuItem==null){
+
+            listMutableLiveDataMenuItem = new MutableLiveData<List<Item>>();
+            //loadMenuItem();
+        }
+
+        return listMutableLiveDataMenuItem;
     }
 
     //method to get the restaurant data
@@ -68,23 +87,32 @@ public class MenuViewModel extends ViewModel {
 //
                 // generateDataList(response.body());
                listMutableLiveData.setValue(response.body());
-                // mMenuList.get(0).getId();
-               // Log.d("RESPONSE", "MENU_SIZE= Grupos  " + mMenuList.size());//qdade de grupos
-                mMenuListItem = listMutableLiveData.getValue().get(0).getItems();
-                Log.d("RESPONSE", "MENU_SIZE_ITEMS= " + mMenuListItem.size());
 
-               // Log.d("RESPONSE", "ID= " + mMenuList.get(0).getId());
-               // Log.d("RESPONSE", "NAME= " + mMenuList.get(0).getName());
-                Log.d("RESPONSE", "ITEM= " + mMenuListItem.get(0).getName());
+                mMenuList = listMutableLiveData.getValue();
+                Log.d("RESPONSE", "MENU_SIZE_ITEMS= " + mMenuList.size());
+
+               // Log.d("RESPONSE", "ITEM= " + mMenuListItem.get(0).getName());
             }
 
             @Override
             public void onFailure(Call<List<Menu>> call, Throwable t) {
-//                progressDoalog.dismiss();
-                //Toast.makeText(getApplicationContext(), "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+             Log.d("RESPONSE_FAILURE", t.toString());
             }
         });
     }
+
+    /*private void loadMenuItem(){
+
+        for(int i=0;i<mMenuListItem.size();i++){
+
+            itemList.add(i, mMenuListItem.get(i));
+
+                  if(i==mMenuListItem.size()){
+                      listMutableLiveDataMenuItem.setValue(itemList.get(0));
+                  }
+        }
+
+    }*/
 
     //using retrofit to get restaurant data from webservice
     private void loadRestaurant(){
@@ -98,24 +126,23 @@ public class MenuViewModel extends ViewModel {
         call.enqueue(new Callback<List<Restaurant>>() {
             @Override
             public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
-//
-                // generateDataList(response.body());
+
+
                 listMutableLiveDataRestaurant.setValue(response.body());
-                // mMenuList.get(0).getId();
-                // Log.d("RESPONSE", "MENU_SIZE= Grupos  " + mMenuList.size());//qdade de grupos
+
+
                 restaurantList = listMutableLiveDataRestaurant.getValue();
                 Log.d("RESPONSE", "RESTAURANT_SIZE= " + restaurantList.size());
 
-                // Log.d("RESPONSE", "ID= " + mMenuList.get(0).getId());
-                // Log.d("RESPONSE", "NAME= " + mMenuList.get(0).getName());
+
                 Log.d("RESPONSE", "NAME= " + restaurantList.get(0).getName());
             }
 
             @Override
             public void onFailure(Call<List<Restaurant>> call, Throwable t) {
-//                progressDoalog.dismiss();
+
                 Log.d("RESPONSE_FAILURE", t.toString());
-                //Toast.makeText(getApplicationContext(), "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

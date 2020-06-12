@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 public class Product {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private int groupId;
     private String name;
     private String description;
     private String image_url;
@@ -19,6 +20,14 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public void setImage_url(String image_url) {
