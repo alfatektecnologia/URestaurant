@@ -1,6 +1,7 @@
 package br.com.oliveiraemanoel.urestaurant.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,10 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
 
     Context context;
     private List<Item> menuItemList;
-
-    private int qty=0;
+    private List<Integer> qty = new ArrayList<>();
+    private List<Integer> qtySelectedPosition = new ArrayList<>();
     private int total=0;
+    private int x=0;
 
     public MenuItemAdapter(Context context, List<Item> menuItemList) {
         this.context = context;
@@ -44,17 +46,22 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull MenuItemAdapter.ViewHolder holder, int position)  {
 
+        qty.add(position,0);
+        qtySelectedPosition.add(position,0);
 
-        holder.tvQty.setText(String.valueOf(qty));
+        holder.tvQty.setText(String.valueOf(qty.get(position)));
         holder.tvPrice.setText("R$ " + String.valueOf(menuItemList.get(position).getPrice()));
         holder.tvDescription.setText(menuItemList.get(position).getDescription());
         holder.tvNome.setText(menuItemList.get(position).getName());
         holder.btPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(qty>=0){
-                    qty++;
-                    holder.tvQty.setText(String.valueOf(qty));
+                x = qty.get(position);
+                if(x>=0){
+                    Log.d("ON_CLICK++","X = "+ x);
+                    //qtySelectedPosition.add(position,x+1);
+                    qty.add(position,x+1);
+                    holder.tvQty.setText(String.valueOf(qty.get(position)));
                 };
             }
         });
@@ -62,11 +69,14 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
         holder.btMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(qty>0){
-                    qty--;
-                    holder.tvQty.setText(String.valueOf(qty));
+                x = qty.get(position);
+                if(x>0){
 
-                }
+                    Log.d("ON_CLICK--","X = "+ x);
+                    //qtySelectedPosition.add(position,x-1);
+                    qty.add(position,x-1);
+                    holder.tvQty.setText(String.valueOf(qty.get(position)));
+                };
             }
         });
 
