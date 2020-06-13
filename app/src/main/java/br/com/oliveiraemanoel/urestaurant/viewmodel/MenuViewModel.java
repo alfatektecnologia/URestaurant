@@ -4,14 +4,13 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.oliveiraemanoel.urestaurant.adapters.MenuItemAdapter;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
-import br.com.oliveiraemanoel.urestaurant.models.Menu;
+import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
 import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
@@ -22,12 +21,12 @@ import retrofit2.Retrofit;
 
 public class MenuViewModel extends ViewModel {
 
-    private List<Menu> mMenuList = new ArrayList<>();
-    private List<Menu> mMenuListItem = new ArrayList<>();
+    private List<UMenu> mUMenuList = new ArrayList<>();
+    private List<UMenu> mUMenuListItem = new ArrayList<>();
     private List<Restaurant> restaurantList = new ArrayList<>();
     List<Item> itemList = new ArrayList<>();
     //data that will be mutable asynchronously
-    private MutableLiveData<List<Menu>> listMutableLiveData;
+    private MutableLiveData<List<UMenu>> listMutableLiveData;
     private MutableLiveData<List<Restaurant>> listMutableLiveDataRestaurant;
     private MutableLiveData<List<Item>> listMutableLiveDataMenuItem;
     private MenuItemAdapter itemAdapter;
@@ -35,11 +34,11 @@ public class MenuViewModel extends ViewModel {
     public static int index4ItemRecyclerList = 0;//default value
 
     //method to get the menu data
-    public LiveData<List<Menu>> getMenu(){
+    public LiveData<List<UMenu>> getMenu(){
         //check if mutablelist has data
         if(listMutableLiveData==null){
 
-            listMutableLiveData = new MutableLiveData<List<Menu>>();
+            listMutableLiveData = new MutableLiveData<List<UMenu>>();
             loadMenu();
         }
 
@@ -80,22 +79,22 @@ public class MenuViewModel extends ViewModel {
 
         GetDataService getDataService = retrofit.create(GetDataService.class);
 
-        Call<List<Menu>> call = getDataService.getMenu();
-        call.enqueue(new Callback<List<Menu>>() {
+        Call<List<UMenu>> call = getDataService.getMenu();
+        call.enqueue(new Callback<List<UMenu>>() {
             @Override
-            public void onResponse(Call<List<Menu>> call, Response<List<Menu>> response) {
+            public void onResponse(Call<List<UMenu>> call, Response<List<UMenu>> response) {
 //
                 // generateDataList(response.body());
                listMutableLiveData.setValue(response.body());
 
-                mMenuList = listMutableLiveData.getValue();
-                Log.d("RESPONSE", "MENU_SIZE_ITEMS= " + mMenuList.size());
+                mUMenuList = listMutableLiveData.getValue();
+                Log.d("RESPONSE", "MENU_SIZE_ITEMS= " + mUMenuList.size());
 
                // Log.d("RESPONSE", "ITEM= " + mMenuListItem.get(0).getName());
             }
 
             @Override
-            public void onFailure(Call<List<Menu>> call, Throwable t) {
+            public void onFailure(Call<List<UMenu>> call, Throwable t) {
              Log.d("RESPONSE_FAILURE", t.toString());
             }
         });

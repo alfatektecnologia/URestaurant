@@ -1,6 +1,5 @@
 package br.com.oliveiraemanoel.urestaurant.views;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -8,10 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +17,8 @@ import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.adapters.MenuGrupoAdapter;
 import br.com.oliveiraemanoel.urestaurant.adapters.MenuItemAdapter;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
-import br.com.oliveiraemanoel.urestaurant.models.Menu;
-import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
-import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
+import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.viewmodel.MenuViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CardapioActivity extends AppCompatActivity {
 
@@ -48,6 +40,7 @@ public class CardapioActivity extends AppCompatActivity {
         context = getApplicationContext();
         getSupportActionBar().setTitle(R.string.mainTitle);
 
+
         recyclerView = findViewById(R.id.rvMenuGrupo);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
@@ -58,19 +51,19 @@ public class CardapioActivity extends AppCompatActivity {
 
         MenuViewModel menuViewModel = ViewModelProviders.of(this).get(MenuViewModel.class);
 
-        menuViewModel.getMenu().observe(this, new Observer<List<Menu>>() {
+        menuViewModel.getMenu().observe(this, new Observer<List<UMenu>>() {
 
             @Override
-            public void onChanged(List<Menu> menus) {
-                Log.d("MAIN_ACTIVITY","MENU_SIZE= " +menus.size());
+            public void onChanged(List<UMenu> UMenus) {
+                Log.d("MAIN_ACTIVITY","MENU_SIZE= " + UMenus.size());
 
-               adapter = new MenuGrupoAdapter(menus,getApplicationContext());
+               adapter = new MenuGrupoAdapter(UMenus,getApplicationContext());
                recyclerView.setAdapter(adapter);
 
-               if(menus.size()>0) {
+               if(UMenus.size()>0) {
                    //adding items of each group to list of items
-                   for (int i = 0; i < menus.size(); i++) {
-                       itemList.add(i, menus.get(i).getItems());
+                   for (int i = 0; i < UMenus.size(); i++) {
+                       itemList.add(i, UMenus.get(i).getItems());
                    }
 
                    //creating a list of items by group
@@ -106,5 +99,7 @@ public class CardapioActivity extends AppCompatActivity {
 
 
             }
+
     }
+
 }

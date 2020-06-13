@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
-import br.com.oliveiraemanoel.urestaurant.models.Menu;
+
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {
 
     Context context;
     private List<Item> menuItemList;
     private List<Integer> qty = new ArrayList<>();
-    private List<Integer> qtySelectedPosition = new ArrayList<>();
+
     private int total=0;
     private int x=0;
 
@@ -47,7 +46,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
     public void onBindViewHolder(@NonNull MenuItemAdapter.ViewHolder holder, int position)  {
 
         qty.add(position,0);
-        qtySelectedPosition.add(position,0);
 
         holder.tvQty.setText(String.valueOf(qty.get(position)));
         holder.tvPrice.setText("R$ " + String.valueOf(menuItemList.get(position).getPrice()));
@@ -59,7 +57,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
                 x = qty.get(position);
                 if(x>=0){
                     Log.d("ON_CLICK++","X = "+ x);
-                    //qtySelectedPosition.add(position,x+1);
+
                     qty.add(position,x+1);
                     holder.tvQty.setText(String.valueOf(qty.get(position)));
                 };
@@ -73,7 +71,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
                 if(x>0){
 
                     Log.d("ON_CLICK--","X = "+ x);
-                    //qtySelectedPosition.add(position,x-1);
+
                     qty.add(position,x-1);
                     holder.tvQty.setText(String.valueOf(qty.get(position)));
                 };

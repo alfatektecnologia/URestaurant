@@ -2,7 +2,7 @@ package br.com.oliveiraemanoel.urestaurant.models;
 
 import java.util.List;
 
-public class Menu {
+public class UMenu {
 
     private int id;
     private String name;

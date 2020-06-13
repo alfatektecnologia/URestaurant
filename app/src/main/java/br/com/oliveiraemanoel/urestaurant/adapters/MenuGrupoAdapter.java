@@ -1,7 +1,6 @@
 package br.com.oliveiraemanoel.urestaurant.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
-import br.com.oliveiraemanoel.urestaurant.models.Menu;
+import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.viewmodel.MenuViewModel;
 import br.com.oliveiraemanoel.urestaurant.views.CardapioActivity;
 
 public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.ViewHolder> {
 
-    private List<Menu> groupList;
+    private List<UMenu> groupList;
     private Context context;
     private int selected=0;
     private int lastSelected=0;
 
-    public MenuGrupoAdapter(List<Menu> groupList, Context context) {
+    public MenuGrupoAdapter(List<UMenu> groupList, Context context) {
         this.groupList = groupList;
         this.context = context;
     }
