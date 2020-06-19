@@ -1,17 +1,21 @@
 package br.com.oliveiraemanoel.urestaurant.viewmodel;
 
+import android.app.Application;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.oliveiraemanoel.urestaurant.adapters.MenuItemAdapter;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
+import br.com.oliveiraemanoel.urestaurant.repositories.MenuRoomDBRepository;
+import br.com.oliveiraemanoel.urestaurant.repositories.UMenuWebRepository;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
 import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
 import retrofit2.Call;
@@ -19,21 +23,44 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MenuViewModel extends ViewModel {
+public class MenuViewModel extends AndroidViewModel {
 
-    private List<UMenu> mUMenuList = new ArrayList<>();
-    private List<UMenu> mUMenuListItem = new ArrayList<>();
+   // private List<UMenu> mUMenuList = new ArrayList<>();
+   // private List<UMenu> mUMenuListItem = new ArrayList<>();
     private List<Restaurant> restaurantList = new ArrayList<>();
-    List<Item> itemList = new ArrayList<>();
+  //  List<Item> itemList = new ArrayList<>();
     //data that will be mutable asynchronously
-    private MutableLiveData<List<UMenu>> listMutableLiveData;
+   // private MutableLiveData<List<UMenu>> listMutableLiveData;
     private MutableLiveData<List<Restaurant>> listMutableLiveDataRestaurant;
     private MutableLiveData<List<Item>> listMutableLiveDataMenuItem;
-    private MenuItemAdapter itemAdapter;
-
+  //  private MenuItemAdapter itemAdapter;
+    Application application;
     public static int index4ItemRecyclerList = 0;//default value
 
-    //method to get the menu data
+    /*public MenuViewModel(@NonNull Application application) {
+        super(application);
+    }*/
+
+
+    private MenuRoomDBRepository menuRoomDBRepository;
+    private LiveData<List<UMenu>> mAllMenu;
+    UMenuWebRepository webServiceRepository ;
+    private final LiveData<List<UMenu>>  retroObservable;
+    public MenuViewModel(@NonNull Application application) {
+        super(application);
+
+        menuRoomDBRepository = new MenuRoomDBRepository(application);
+        webServiceRepository = new UMenuWebRepository(application);
+        retroObservable = webServiceRepository.getMenu();
+       // menuRoomDBRepository.insertItems(retroObservable.getValue());
+        mAllMenu = menuRoomDBRepository.getAll();
+    }
+
+    public LiveData<List<UMenu>> getAll() {
+        return mAllMenu;
+    }
+
+   /* //method to get the menu data
     public LiveData<List<UMenu>> getMenu(){
         //check if mutablelist has data
         if(listMutableLiveData==null){
@@ -44,7 +71,7 @@ public class MenuViewModel extends ViewModel {
 
         return listMutableLiveData;
     }
-
+*/
 
 
     //method to get the menuItem data
@@ -71,7 +98,7 @@ public class MenuViewModel extends ViewModel {
         return listMutableLiveDataRestaurant;
     }
 
-    //using retrofit to get menu data from webservice
+    /*//using retrofit to get menu data from webservice
     private void loadMenu(){
 
         Retrofit retrofit;
@@ -98,7 +125,7 @@ public class MenuViewModel extends ViewModel {
              Log.d("RESPONSE_FAILURE", t.toString());
             }
         });
-    }
+    }*/
 
     /*private void loadMenuItem(){
 

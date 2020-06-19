@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import br.com.oliveiraemanoel.urestaurant.models.User;
-import br.com.oliveiraemanoel.urestaurant.repositories.UserDAO;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.UserDAO;
 
 @Database(entities ={User.class},version = 1)
 public abstract class UserDatabase extends RoomDatabase {

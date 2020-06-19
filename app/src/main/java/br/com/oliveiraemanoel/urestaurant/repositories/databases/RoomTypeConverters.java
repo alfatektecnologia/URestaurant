@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.Orderr;
 
 public class RoomTypeConverters {
@@ -17,7 +18,7 @@ public class RoomTypeConverters {
     static Gson gson = new Gson();
 
     @TypeConverter
-    public static List<Orderr> stringToSomeObjectList(String data) {
+    public static List<Orderr> stringToOrderr(String data) {
         if (data == null) {
             return Collections.emptyList();
         }
@@ -28,8 +29,23 @@ public class RoomTypeConverters {
     }
 
     @TypeConverter
-    public static String someObjectListToString(List<Orderr> someObjects) {
-        return gson.toJson(someObjects);
+    public static List<Item> stringToItem(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+
+        Type listType = new TypeToken<List<Item>>() {}.getType();
+
+        return gson.fromJson(data, listType);
+    }
+    @TypeConverter
+    public static String itemListToString(List<Item> items) {
+        return gson.toJson(items);
+    }
+
+    @TypeConverter
+    public static String orderrListToString(List<Orderr> orderrList) {
+        return gson.toJson(orderrList);
     }
 
     @TypeConverter

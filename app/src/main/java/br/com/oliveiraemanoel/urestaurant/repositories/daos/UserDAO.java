@@ -1,4 +1,4 @@
-package br.com.oliveiraemanoel.urestaurant.repositories;
+package br.com.oliveiraemanoel.urestaurant.repositories.daos;
 
 import androidx.room.Dao;
 import androidx.room.Query;

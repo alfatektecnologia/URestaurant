@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import br.com.oliveiraemanoel.urestaurant.models.Product;
-import br.com.oliveiraemanoel.urestaurant.repositories.ProductDAO;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.ProductDAO;
 
 @Database(entities ={Product.class},version = 1)
 public abstract class ProductDatabase extends RoomDatabase {

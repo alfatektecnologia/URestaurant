@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import br.com.oliveiraemanoel.urestaurant.models.Payment;
-import br.com.oliveiraemanoel.urestaurant.repositories.PaymentDAO;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.PaymentDAO;
 
 @Database(entities ={Payment.class},version = 1)
 @TypeConverters({RoomTypeConverters.class})

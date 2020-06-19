@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import br.com.oliveiraemanoel.urestaurant.models.Orderr;
-import br.com.oliveiraemanoel.urestaurant.repositories.OrderDAO;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.OrderDAO;
 
 @Database(entities ={Orderr.class},version = 1)
 @TypeConverters({RoomTypeConverters.class})

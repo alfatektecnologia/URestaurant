@@ -1,4 +1,4 @@
-package br.com.oliveiraemanoel.urestaurant.repositories;
+package br.com.oliveiraemanoel.urestaurant.repositories.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -18,23 +18,23 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 public interface OrderDAO {
 
     @Query("SELECT * FROM Orderr")//got problem using label Order
-    public List<Orderr> getAllOrders();
+    List<Orderr> getAllOrders();
 
     @Query("SELECT * FROM Orderr WHERE userId = :userId")
-    public List<Orderr> getAllOrdersByUserId(int userId);
+     List<Orderr> getAllOrdersByUserId(int userId);
 
     @Query("SELECT * FROM Orderr WHERE date = :date AND userId = :userId")
-    public List<Orderr> getAllOrdersByUserIdAndDate(Date date, int userId);
+     List<Orderr> getAllOrdersByUserIdAndDate(Date date, int userId);
 
     @Query("SELECT * FROM Orderr WHERE isConfirmed=:confirmed")
-    public List<Orderr> getAllOrderConfirmed(boolean confirmed);
+    List<Orderr> getAllOrderConfirmed(boolean confirmed);
 
     @Insert(onConflict = REPLACE)
-    public void insert(Orderr order);
+     void insert(Orderr order);
 
     @Update
-    public void update(Orderr order);
+    void update(Orderr order);
 
     @Delete
-    public void delete(Orderr order);
+     void delete(Orderr order);
 }

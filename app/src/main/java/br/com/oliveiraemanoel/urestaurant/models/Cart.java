@@ -9,7 +9,7 @@ import java.util.List;
 
 import br.com.oliveiraemanoel.urestaurant.repositories.databases.RoomTypeConverters;
 
-@Entity
+@Entity(tableName = "cart_table")
 public class Cart {
     @PrimaryKey(autoGenerate = true)
     private int id;

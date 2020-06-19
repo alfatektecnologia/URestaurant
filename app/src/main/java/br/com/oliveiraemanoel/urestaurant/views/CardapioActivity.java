@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -37,8 +38,6 @@ public class CardapioActivity extends AppCompatActivity {
     private List<List<Item>> itemList = new ArrayList<>();
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,31 +45,31 @@ public class CardapioActivity extends AppCompatActivity {
         context = getApplicationContext();
         getSupportActionBar().setTitle(R.string.mainTitle);
 
-
+        //group recyclerView
         recyclerView = findViewById(R.id.rvMenuGrupo);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
 
+        //Items recyclerView
         itemRecycler = findViewById(R.id.rvMenuItems);
-
         itemRecycler.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
 
         //accessing viewmodel
         MenuViewModel menuViewModel = ViewModelProviders.of(this).get(MenuViewModel.class);
 
-        menuViewModel.getMenu().observe(this, new Observer<List<UMenu>>() {
+        menuViewModel.getAll().observe(this, new Observer<List<UMenu>>() {
 
             @Override
-            public void onChanged(List<UMenu> UMenus) {
-                Log.d("MAIN_ACTIVITY","MENU_SIZE= " + UMenus.size());
+            public void onChanged(List<UMenu> uMenus) {
+                Log.d("MAIN_ACTIVITY","MENU_SIZE= " + uMenus.size());
 
-               adapter = new MenuGrupoAdapter(UMenus,getApplicationContext());
+               adapter = new MenuGrupoAdapter(uMenus,getApplicationContext());
                recyclerView.setAdapter(adapter);
 
-               if(UMenus.size()>0) {
+               if(uMenus.size()>0) {
                    //adding items of each group to list of items
-                   for (int i = 0; i < UMenus.size(); i++) {
-                       itemList.add(i, UMenus.get(i).getItems());
+                   for (int i = 0; i < uMenus.size(); i++) {
+                       itemList.add(i, uMenus.get(i).getItems());
                    }
 
                    //creating a list of items by group
@@ -107,14 +106,23 @@ public class CardapioActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.cart_action_bar, menu);
-      // setCount(this, "9");
+     // setCount(this, "9");
         return true;
 
     }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cartAction:
+                startActivity(new Intent(this, CarrinhoActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-    public void setCount(Context context, String count) {
+    /*public void setCount(Context context, String count) {
         Menu menu = findViewById(R.id.cartAction);
-        MenuItem menuItem = menu.findItem(R.id.cartIcom);
+        MenuItem menuItem = this.defaultMenu.findItem(R.id.cartIcom);
         LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
 
         CountDrawable badge;
@@ -130,7 +138,7 @@ public class CardapioActivity extends AppCompatActivity {
         badge.setCount(count);
         icon.mutate();
         icon.setDrawableByLayerId(R.id.cartCount, badge);
-    }
+    }*/
 
 
 }
