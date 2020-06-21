@@ -15,7 +15,7 @@ public class Cart {
     private int id;
     private int userId;
     @TypeConverters(RoomTypeConverters.class)
-    private List<Orderr> ordemList;
+    private List<Ordem> ordemList;
     private int totalItems;
     private double totalValue;
     private Date date;
@@ -25,11 +25,11 @@ public class Cart {
         this.id = id;
     }
 
-    public void setOrdemList(List<Orderr> ordemList) {
+    public void setOrdemList(List<Ordem> ordemList) {
         this.ordemList = ordemList;
     }
 
-    public List<Orderr> getOrdemList() {
+    public List<Ordem> getOrdemList() {
         return ordemList;
     }
 

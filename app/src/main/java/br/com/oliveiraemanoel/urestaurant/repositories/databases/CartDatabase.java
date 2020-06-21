@@ -18,7 +18,7 @@ import br.com.oliveiraemanoel.urestaurant.repositories.daos.CartDAO;
 public abstract class CartDatabase extends RoomDatabase {
     private static CartDatabase cartDatabase;//singleton of an instance of CartDatabase
 
-    public abstract CartDAO cartDAO();
+    public abstract CartDAO cartDAO();//respective dao
 
     public static synchronized CartDatabase getInstance(Context context){
         if(cartDatabase==null){

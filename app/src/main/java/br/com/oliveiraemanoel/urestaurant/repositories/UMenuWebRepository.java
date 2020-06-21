@@ -24,12 +24,12 @@ import retrofit2.Retrofit;
 public class UMenuWebRepository {
     private List<UMenu> mUMenuList = new ArrayList<>();
     private List<UMenu> mUMenuListItem = new ArrayList<>();
-    private List<Restaurant> restaurantList = new ArrayList<>();
+
     List<Item> itemList = new ArrayList<>();
 
     //data that will be mutable asynchronously
     private MutableLiveData<List<UMenu>> listMutableLiveData;
-    private MutableLiveData<List<Restaurant>> listMutableLiveDataRestaurant;
+
     private MutableLiveData<List<Item>> listMutableLiveDataMenuItem;
     private MenuItemAdapter itemAdapter;
 

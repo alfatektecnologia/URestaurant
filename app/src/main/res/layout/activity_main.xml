@@ -86,7 +86,7 @@
         app:layout_constraintStart_toEndOf="@+id/linearLayout2">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/bt_close_order"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#6886C5"

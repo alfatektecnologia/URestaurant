@@ -1,5 +1,6 @@
 package br.com.oliveiraemanoel.urestaurant.adapters;
 
+import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+
 import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
@@ -20,7 +23,8 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
     private Context context;
     private int selected=0;
     private int lastSelected=0;
-
+    Application application;
+    MenuViewModel menuViewModel;
     public MenuGrupoAdapter(List<UMenu> groupList, Context context) {
         this.groupList = groupList;
         this.context = context;
@@ -30,6 +34,7 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.menu_group,parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
@@ -49,8 +54,9 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
         holder.tvGroupName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //update item adapter==>todo change this to work with livedata
+                //update item adapter==>
                 MenuViewModel.index4ItemRecyclerList=position;
+                MenuViewModel.getIndex();
                 CardapioActivity.updateAdapter(true);
 
                 //Save the position of the last selected item

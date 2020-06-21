@@ -4,8 +4,8 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
-@Entity
-public class Orderr {
+@Entity(tableName = "order_table")
+public class Ordem {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int userId;

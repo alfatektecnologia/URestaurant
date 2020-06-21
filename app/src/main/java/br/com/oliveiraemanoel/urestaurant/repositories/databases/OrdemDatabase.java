@@ -10,28 +10,28 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import br.com.oliveiraemanoel.urestaurant.models.UMenu;
-import br.com.oliveiraemanoel.urestaurant.repositories.daos.UMenuTableDao;
+import br.com.oliveiraemanoel.urestaurant.models.Ordem;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.OrdemDAO;
 
-@Database(entities = {UMenu.class},version = 1)
+@Database(entities ={Ordem.class},version = 1)
 @TypeConverters({RoomTypeConverters.class})
-public abstract class UMenuRoomDatabase extends RoomDatabase {
-    public abstract UMenuTableDao menuTableDao();
-    private static UMenuRoomDatabase INSTANCE;
+public abstract class OrdemDatabase extends RoomDatabase {
+    private static OrdemDatabase INSTANCE;
 
-    public static synchronized UMenuRoomDatabase getInstance(Context context){
+    public abstract OrdemDAO orderDAO();
 
+    public static synchronized OrdemDatabase getInstance(Context context){
         if(INSTANCE==null){
-
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), UMenuRoomDatabase.class,"menu_table")
+            INSTANCE = Room.databaseBuilder(context, OrdemDatabase.class,"order_table")
                     .fallbackToDestructiveMigration()
-                    .addCallback(sMenuRoomDatabase)
                     .build();
+
         }
+
         return INSTANCE;
     }
 
-    private static Callback sMenuRoomDatabase = new Callback() {
+    private static Callback ordemDBcallback = new Callback() {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
@@ -41,10 +41,10 @@ public abstract class UMenuRoomDatabase extends RoomDatabase {
 
     public static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final UMenuTableDao mDao;
+        private final OrdemDAO mDao;
 
-        PopulateDbAsync(UMenuRoomDatabase db) {
-            mDao = db.menuTableDao();
+        PopulateDbAsync(OrdemDatabase db) {
+            mDao = db.orderDAO();
         }
 
         @Override
@@ -53,5 +53,5 @@ public abstract class UMenuRoomDatabase extends RoomDatabase {
             return null;
         }
     }
-}
 
+}

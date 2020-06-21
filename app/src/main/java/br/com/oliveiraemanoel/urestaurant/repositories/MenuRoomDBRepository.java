@@ -8,22 +8,24 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.repositories.daos.UMenuTableDao;
 import br.com.oliveiraemanoel.urestaurant.repositories.databases.UMenuRoomDatabase;
 
 public class MenuRoomDBRepository {
     private UMenuTableDao uMenuTableDao;
-    LiveData<List<UMenu>> mAllMenu;
+    LiveData<List<UMenu>> allMenu;
+
 
     public MenuRoomDBRepository(Application application){
         UMenuRoomDatabase db = UMenuRoomDatabase.getInstance(application);
         uMenuTableDao = db.menuTableDao();
-        mAllMenu = uMenuTableDao.getUMenu();
+        allMenu = uMenuTableDao.getUMenu();
     }
 
     public LiveData<List<UMenu>> getAll() {
-        return mAllMenu;
+        return allMenu;
     }
     public void insertItems (List<UMenu> menus) {
         try {

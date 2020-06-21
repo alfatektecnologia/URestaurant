@@ -15,6 +15,8 @@ import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.repositories.MenuRoomDBRepository;
+import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantRoomDBRepository;
+import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantWebRepository;
 import br.com.oliveiraemanoel.urestaurant.repositories.UMenuWebRepository;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
 import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
@@ -23,122 +25,136 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+
+
 public class MenuViewModel extends AndroidViewModel {
 
-   // private List<UMenu> mUMenuList = new ArrayList<>();
-   // private List<UMenu> mUMenuListItem = new ArrayList<>();
-    private List<Restaurant> restaurantList = new ArrayList<>();
-  //  List<Item> itemList = new ArrayList<>();
-    //data that will be mutable asynchronously
-   // private MutableLiveData<List<UMenu>> listMutableLiveData;
-    private MutableLiveData<List<Restaurant>> listMutableLiveDataRestaurant;
-    private MutableLiveData<List<Item>> listMutableLiveDataMenuItem;
-  //  private MenuItemAdapter itemAdapter;
-    Application application;
-    public static int index4ItemRecyclerList = 0;//default value
+    //restaurant
+    private Restaurant restaurantList = new Restaurant();
+    private MutableLiveData<Restaurant> listMutableLiveDataRestaurant;
+    private LiveData<Restaurant> restaurantLiveData;
+    private final LiveData<Restaurant> restau;
 
-    /*public MenuViewModel(@NonNull Application application) {
-        super(application);
-    }*/
-
-
-    private MenuRoomDBRepository menuRoomDBRepository;
+    //menu
+    private MutableLiveData<List<List<Item>>> listMutableLiveDataMenuItem;
+    private static List<List<Item>> groupItemList = new ArrayList<>();
+    private List<List<Item>> itemList = new ArrayList<>();
     private LiveData<List<UMenu>> mAllMenu;
-    UMenuWebRepository webServiceRepository ;
     private final LiveData<List<UMenu>>  retroObservable;
+
+    //item recyclerView
+    public static int index4ItemRecyclerList = 0;//default value
+    private static MutableLiveData<Integer> index4ListItemMutable;
+
+    //order?
+    private MutableLiveData<Integer> integerMutableLiveData;
+
+    //repository
+    private MenuRoomDBRepository menuRoomDBRepository;
+    private RestaurantRoomDBRepository restaurantRoomDBRepository;
+    UMenuWebRepository webServiceRepository ;
+    RestaurantWebRepository restaurantWebRepository;
+
+    Application application;
+
+
     public MenuViewModel(@NonNull Application application) {
         super(application);
-
+        integerMutableLiveData = new MutableLiveData<Integer>();
         menuRoomDBRepository = new MenuRoomDBRepository(application);
+        restaurantRoomDBRepository = new RestaurantRoomDBRepository(application);
+        restaurantWebRepository = new RestaurantWebRepository(application);
         webServiceRepository = new UMenuWebRepository(application);
         retroObservable = webServiceRepository.getMenu();
+        restau = restaurantWebRepository.getRestaurant();
        // menuRoomDBRepository.insertItems(retroObservable.getValue());
         mAllMenu = menuRoomDBRepository.getAll();
+        restaurantLiveData = restaurantRoomDBRepository.getAllRestaurants();
     }
 
+    //getting all data from menu
     public LiveData<List<UMenu>> getAll() {
         return mAllMenu;
     }
 
-   /* //method to get the menu data
-    public LiveData<List<UMenu>> getMenu(){
-        //check if mutablelist has data
-        if(listMutableLiveData==null){
 
-            listMutableLiveData = new MutableLiveData<List<UMenu>>();
-            loadMenu();
+
+    public LiveData<Integer> setInteger(Integer i){
+        int valorAtual=0;
+        if(integerMutableLiveData!=null){
+           // valorAtual = integerMutableLiveData.getValue();
         }
 
-        return listMutableLiveData;
+
+        integerMutableLiveData.setValue(i+valorAtual);
+
+        return integerMutableLiveData;
     }
-*/
 
 
     //method to get the menuItem data
-    public LiveData<List<Item>> getMenuItem(){
+    public LiveData<List<List<Item>>> getMenuItem(List<UMenu> uMenus){
         //check if mutablelist has data
         if(listMutableLiveDataMenuItem==null){
 
-            listMutableLiveDataMenuItem = new MutableLiveData<List<Item>>();
-            //loadMenuItem();
+            listMutableLiveDataMenuItem = new MutableLiveData<List<List<Item>>>();
+            getGroupItems(uMenus);
         }
 
         return listMutableLiveDataMenuItem;
     }
 
     //method to get the restaurant data
-    public LiveData<List<Restaurant>> getRestaurant(){
+    public LiveData<Restaurant> getRestaurant(){
         //check if mutablelist has data
         if(listMutableLiveDataRestaurant==null){
 
-            listMutableLiveDataRestaurant = new MutableLiveData<List<Restaurant>>();
+            listMutableLiveDataRestaurant = new MutableLiveData<Restaurant>();
             loadRestaurant();
         }
 
         return listMutableLiveDataRestaurant;
     }
 
-    /*//using retrofit to get menu data from webservice
-    private void loadMenu(){
-
-        Retrofit retrofit;
-        retrofit = RetrofitClientInstance.getRetrofitInstance();
-
-        GetDataService getDataService = retrofit.create(GetDataService.class);
-
-        Call<List<UMenu>> call = getDataService.getMenu();
-        call.enqueue(new Callback<List<UMenu>>() {
-            @Override
-            public void onResponse(Call<List<UMenu>> call, Response<List<UMenu>> response) {
-//
-                // generateDataList(response.body());
-               listMutableLiveData.setValue(response.body());
-
-                mUMenuList = listMutableLiveData.getValue();
-                Log.d("RESPONSE", "MENU_SIZE_ITEMS= " + mUMenuList.size());
-
-               // Log.d("RESPONSE", "ITEM= " + mMenuListItem.get(0).getName());
+    //getting group
+    public void getGroupItems(List<UMenu> uMenus){
+        if(uMenus.size()>0) {
+            //adding items of each group to list of items
+            for (int i = 0; i < uMenus.size(); i++) {
+                itemList.add(i, uMenus.get(i).getItems());
             }
 
-            @Override
-            public void onFailure(Call<List<UMenu>> call, Throwable t) {
-             Log.d("RESPONSE_FAILURE", t.toString());
+            //creating a list of items by group
+            int x = -1;
+            for (List<Item> listList : itemList) {
+                x++;
+                groupItemList.add(x, listList);
+
             }
-        });
-    }*/
-
-    /*private void loadMenuItem(){
-
-        for(int i=0;i<mMenuListItem.size();i++){
-
-            itemList.add(i, mMenuListItem.get(i));
-
-                  if(i==mMenuListItem.size()){
-                      listMutableLiveDataMenuItem.setValue(itemList.get(0));
-                  }
         }
 
-    }*/
+        if(groupItemList.size()>0){
+           listMutableLiveDataMenuItem.setValue(groupItemList);
+        }
+    }
+
+    public static MutableLiveData<Integer> getIndex(){
+
+        if(index4ListItemMutable==null){
+            index4ListItemMutable = new MutableLiveData<>();
+
+        }
+        setIndex4ListItem();
+        Log.d("GET_INDEX....","INDEX = "+ index4ListItemMutable.getValue());
+        return index4ListItemMutable;
+    }
+
+    private static void setIndex4ListItem(){
+
+        index4ListItemMutable.setValue(index4ItemRecyclerList);
+        Log.d("SET_INDEX....","INDEX_GET = "+ index4ListItemMutable.getValue());
+    }
+
 
     //using retrofit to get restaurant data from webservice
     private void loadRestaurant(){
@@ -148,24 +164,19 @@ public class MenuViewModel extends AndroidViewModel {
 
         GetDataService getDataService = retrofit.create(GetDataService.class);
 
-        Call<List<Restaurant>> call = getDataService.getRestaurant();
-        call.enqueue(new Callback<List<Restaurant>>() {
+        Call<Restaurant> call = getDataService.getRestaurant();
+        call.enqueue(new Callback<Restaurant>() {
             @Override
-            public void onResponse(Call<List<Restaurant>> call, Response<List<Restaurant>> response) {
-
+            public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
 
                 listMutableLiveDataRestaurant.setValue(response.body());
-
-
                 restaurantList = listMutableLiveDataRestaurant.getValue();
-                Log.d("RESPONSE", "RESTAURANT_SIZE= " + restaurantList.size());
 
-
-                Log.d("RESPONSE", "NAME= " + restaurantList.get(0).getName());
+                Log.d("RESPONSE", "NAME= " + restaurantList.getName());
             }
 
             @Override
-            public void onFailure(Call<List<Restaurant>> call, Throwable t) {
+            public void onFailure(Call<Restaurant> call, Throwable t) {
 
                 Log.d("RESPONSE_FAILURE", t.toString());
 

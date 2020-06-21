@@ -13,5 +13,5 @@ public interface GetDataService {
     Call <List<UMenu>> getMenu();
 
     @GET("restaurant")
-    Call <List<Restaurant>> getRestaurant();
+    Call <Restaurant> getRestaurant();
 }

@@ -11,19 +11,19 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.oliveiraemanoel.urestaurant.models.Item;
-import br.com.oliveiraemanoel.urestaurant.models.Orderr;
+import br.com.oliveiraemanoel.urestaurant.models.Ordem;
 
 public class RoomTypeConverters {
 
     static Gson gson = new Gson();
 
     @TypeConverter
-    public static List<Orderr> stringToOrderr(String data) {
+    public static List<Ordem> stringToOrderr(String data) {
         if (data == null) {
             return Collections.emptyList();
         }
 
-        Type listType = new TypeToken<List<Orderr>>() {}.getType();
+        Type listType = new TypeToken<List<Ordem>>() {}.getType();
 
         return gson.fromJson(data, listType);
     }
@@ -44,8 +44,8 @@ public class RoomTypeConverters {
     }
 
     @TypeConverter
-    public static String orderrListToString(List<Orderr> orderrList) {
-        return gson.toJson(orderrList);
+    public static String orderrListToString(List<Ordem> ordemList) {
+        return gson.toJson(ordemList);
     }
 
     @TypeConverter
