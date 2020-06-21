@@ -39,7 +39,7 @@ public class CardapioActivity extends AppCompatActivity {
     private static Context context;
     private List<UMenu> uMenuList = new ArrayList<>();
     private static List<List<Item>> groupItemList = new ArrayList<>();
-    private List<List<Item>> itemList = new ArrayList<>();
+
     //widgets
     private TextView tv_valor_minimo;
     private TextView tv_total;

@@ -10,23 +10,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
-import br.com.oliveiraemanoel.urestaurant.viewmodel.MenuViewModel;
+
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {
 
     Context context;
-    Application application;
     private List<Item> menuItemList;
     private List<Integer> qty = new ArrayList<>();
-   // private MenuViewModel menuViewModel = new MenuViewModel(application);
-
     private int total=0;
     private int x=0;
 
@@ -88,7 +84,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
         Picasso.get()
 
                 .load(menuItemList.get(position).getImage_url())
-                //.centerCrop()
                 .into(holder.imageView);
     }
 

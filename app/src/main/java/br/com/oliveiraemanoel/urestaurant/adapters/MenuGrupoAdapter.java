@@ -6,11 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-
 import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.R;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
@@ -23,8 +20,7 @@ public class MenuGrupoAdapter extends RecyclerView.Adapter<MenuGrupoAdapter.View
     private Context context;
     private int selected=0;
     private int lastSelected=0;
-    Application application;
-    MenuViewModel menuViewModel;
+
     public MenuGrupoAdapter(List<UMenu> groupList, Context context) {
         this.groupList = groupList;
         this.context = context;

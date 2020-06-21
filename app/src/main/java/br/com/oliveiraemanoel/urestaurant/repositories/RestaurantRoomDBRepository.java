@@ -3,45 +3,46 @@ package br.com.oliveiraemanoel.urestaurant.repositories;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
-
-
-
+import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
-
-import br.com.oliveiraemanoel.urestaurant.repositories.daos.RestaurantDao;
-
-import br.com.oliveiraemanoel.urestaurant.repositories.databases.RestaurantDatabase;
+import br.com.oliveiraemanoel.urestaurant.models.UMenu;
+import br.com.oliveiraemanoel.urestaurant.repositories.daos.URestaurantDAO;
+import br.com.oliveiraemanoel.urestaurant.repositories.databases.URestaurantRoomDB;
 
 
 public class RestaurantRoomDBRepository {
-    private RestaurantDao restaurantDao;
+    private URestaurantDAO uRestaurantDAO;
     LiveData<Restaurant> restaurantLiveData;
+    LiveData<List<UMenu>> allMenu;
 
     public RestaurantRoomDBRepository(Application application){
-        RestaurantDatabase db = RestaurantDatabase.getInstance(application);
-        restaurantDao = db.restaurantDao();
-        restaurantLiveData = restaurantDao.getAllRestaurants();
+       URestaurantRoomDB db = URestaurantRoomDB.getInstance(application);
+        uRestaurantDAO = db.uRestaurantDAO();
+        restaurantLiveData = uRestaurantDAO.getAllRestaurants();
+        allMenu = uRestaurantDAO.getUMenu();
     }
 
     public LiveData<Restaurant> getAllRestaurants(){return restaurantLiveData;}
+    public LiveData<List<UMenu>> getAll() {
+        return allMenu;
+    }
 
 
-    public void insertItems (Restaurant restaurants) {
+    public void insertItemsRestaurant (Restaurant restaurants) {
         try {
-            new RestaurantRoomDBRepository.insertAsyncTask(restaurantDao).execute(restaurants);
+            new RestaurantRoomDBRepository.insertAsyncTaskRestaurant(uRestaurantDAO).execute(restaurants);
         }catch (Exception e){
             Log.d("RestauRoomDbRepository","getAllRestaurant_error "+e.toString());
         }
 
     }
 
-    private static class insertAsyncTask extends AsyncTask<Restaurant, Void, Void> {
+    private static class insertAsyncTaskRestaurant extends AsyncTask<Restaurant, Void, Void> {
 
-        private RestaurantDao mAsyncTaskDao;
+        private URestaurantDAO mAsyncTaskDao;
 
-        insertAsyncTask(RestaurantDao dao) {
+        insertAsyncTaskRestaurant(URestaurantDAO dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -49,6 +50,37 @@ public class RestaurantRoomDBRepository {
         protected Void doInBackground(final Restaurant... params) {
             try {
                 mAsyncTaskDao.insert(params[0]);
+            }catch (Exception e){
+                Log.d("MenuRoomDbRepository","doInBackground_error "+e.toString());
+
+            }
+
+            return null;
+        }
+    }
+
+    //menu
+    public void insertItemsMenu (List<UMenu> menus) {
+        try {
+            new insertAsyncTaskMenu(uRestaurantDAO).execute(menus);
+        }catch (Exception e){
+            Log.d("MenuRoomDbRepository","getAll_error "+e.toString());
+        }
+
+    }
+
+    private static class insertAsyncTaskMenu extends AsyncTask<List<UMenu>, Void, Void> {
+
+        private URestaurantDAO mAsyncTaskDao;
+
+        insertAsyncTaskMenu(URestaurantDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final List<UMenu>... params) {
+            try {
+                mAsyncTaskDao.insertItems(params[0]);
             }catch (Exception e){
                 Log.d("MenuRoomDbRepository","doInBackground_error "+e.toString());
 

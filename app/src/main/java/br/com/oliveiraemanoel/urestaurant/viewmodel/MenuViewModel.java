@@ -1,30 +1,23 @@
 package br.com.oliveiraemanoel.urestaurant.viewmodel;
-
 import android.app.Application;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
-import br.com.oliveiraemanoel.urestaurant.repositories.MenuRoomDBRepository;
 import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantRoomDBRepository;
 import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantWebRepository;
-import br.com.oliveiraemanoel.urestaurant.repositories.UMenuWebRepository;
 import br.com.oliveiraemanoel.urestaurant.retrofit.GetDataService;
 import br.com.oliveiraemanoel.urestaurant.retrofit.RetrofitClientInstance;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
 
 
 public class MenuViewModel extends AndroidViewModel {
@@ -46,29 +39,22 @@ public class MenuViewModel extends AndroidViewModel {
     public static int index4ItemRecyclerList = 0;//default value
     private static MutableLiveData<Integer> index4ListItemMutable;
 
-    //order?
+    //order
     private MutableLiveData<Integer> integerMutableLiveData;
 
     //repository
-    private MenuRoomDBRepository menuRoomDBRepository;
     private RestaurantRoomDBRepository restaurantRoomDBRepository;
-    UMenuWebRepository webServiceRepository ;
-    RestaurantWebRepository restaurantWebRepository;
-
-    Application application;
+    private RestaurantWebRepository restaurantWebRepository;
 
 
     public MenuViewModel(@NonNull Application application) {
         super(application);
         integerMutableLiveData = new MutableLiveData<Integer>();
-        menuRoomDBRepository = new MenuRoomDBRepository(application);
         restaurantRoomDBRepository = new RestaurantRoomDBRepository(application);
         restaurantWebRepository = new RestaurantWebRepository(application);
-        webServiceRepository = new UMenuWebRepository(application);
-        retroObservable = webServiceRepository.getMenu();
+        retroObservable = restaurantWebRepository.getMenu();
         restau = restaurantWebRepository.getRestaurant();
-       // menuRoomDBRepository.insertItems(retroObservable.getValue());
-        mAllMenu = menuRoomDBRepository.getAll();
+        mAllMenu =  restaurantRoomDBRepository.getAll();
         restaurantLiveData = restaurantRoomDBRepository.getAllRestaurants();
     }
 
@@ -77,14 +63,12 @@ public class MenuViewModel extends AndroidViewModel {
         return mAllMenu;
     }
 
-
-
+    //just testing...
     public LiveData<Integer> setInteger(Integer i){
         int valorAtual=0;
         if(integerMutableLiveData!=null){
            // valorAtual = integerMutableLiveData.getValue();
         }
-
 
         integerMutableLiveData.setValue(i+valorAtual);
 

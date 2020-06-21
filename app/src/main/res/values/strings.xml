@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SaborDireto</string>
     <string name="mainTitle">Cardápio</string>
+    <string name="carrinho_activity">Seu carrinho</string>
 </resources>

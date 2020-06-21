@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 //mock user used for test purpose only
-@Entity
+@Entity(tableName = "user_table")
 public class User {
     @PrimaryKey
     private int id = 123456;
