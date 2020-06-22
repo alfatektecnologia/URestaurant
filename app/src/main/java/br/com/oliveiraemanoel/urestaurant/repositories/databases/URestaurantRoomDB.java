@@ -13,12 +13,19 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import br.com.oliveiraemanoel.urestaurant.models.Cart;
 import br.com.oliveiraemanoel.urestaurant.models.Ordem;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
+import br.com.oliveiraemanoel.urestaurant.models.TempCart;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.User;
 
 import br.com.oliveiraemanoel.urestaurant.repositories.daos.URestaurantDAO;
 
-@Database(entities = {Cart.class, Ordem.class, Restaurant.class, User.class, UMenu.class},version = 1)
+@Database(entities = {
+        Cart.class,
+        Ordem.class,
+        Restaurant.class,
+        User.class,
+        TempCart.class,
+        UMenu.class},version = 2)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class URestaurantRoomDB extends RoomDatabase {
 

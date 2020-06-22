@@ -14,6 +14,7 @@ import java.util.List;
 import br.com.oliveiraemanoel.urestaurant.models.Cart;
 import br.com.oliveiraemanoel.urestaurant.models.Ordem;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
+import br.com.oliveiraemanoel.urestaurant.models.TempCart;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.User;
 
@@ -46,6 +47,26 @@ public interface URestaurantDAO {
 
     @Delete
     void delete(Cart cart);
+
+    //tempCart
+    @Query("SELECT * FROM temp_table")
+    LiveData<List<TempCart>> getAllTempCarts();
+
+    @Query("SELECT * FROM temp_table WHERE itemId = :itemId")
+    LiveData<List<TempCart>> getAllTempCartByItemId(int itemId);
+
+    @Query("DELETE FROM temp_table")
+    void deleteAllTempCart();
+
+    @Insert(onConflict = REPLACE)
+    void insert(TempCart tempCart);
+
+    @Update
+    void update(TempCart tempCart);
+
+    @Delete
+    void delete(TempCart tempCart);
+
 
     //Ordem
     @Query("SELECT * FROM order_table")

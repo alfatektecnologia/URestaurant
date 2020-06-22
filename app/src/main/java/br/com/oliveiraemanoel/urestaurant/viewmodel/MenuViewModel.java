@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
@@ -21,6 +23,8 @@ import retrofit2.Retrofit;
 
 
 public class MenuViewModel extends AndroidViewModel {
+
+    public static String deviceLocale = Locale.getDefault().getCountry();
 
     //restaurant
     private Restaurant restaurantList = new Restaurant();
