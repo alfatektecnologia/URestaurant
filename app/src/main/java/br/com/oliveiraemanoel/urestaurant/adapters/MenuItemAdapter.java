@@ -2,32 +2,26 @@ package br.com.oliveiraemanoel.urestaurant.adapters;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
 import br.com.oliveiraemanoel.urestaurant.R;
-import br.com.oliveiraemanoel.urestaurant.models.Cart;
 import br.com.oliveiraemanoel.urestaurant.models.Item;
 import br.com.oliveiraemanoel.urestaurant.models.TempCart;
-import br.com.oliveiraemanoel.urestaurant.repositories.daos.URestaurantDAO;
-import br.com.oliveiraemanoel.urestaurant.repositories.databases.URestaurantRoomDB;
+import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantRoomDBRepository;
 
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {
@@ -40,7 +34,10 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
     private int x=0;
     private int selected=0;
     private int lastSelected=0;
-    private URestaurantRoomDB uRestaurantRoomDB;
+    private RestaurantRoomDBRepository restaurantRoomDBRepository;
+
+
+    Application application;
     private TempCart cart;
     private List<TempCart> cartList = new ArrayList<>();
 
@@ -65,32 +62,15 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MenuItemAdapter.ViewHolder holder, int position)  {
-        uRestaurantRoomDB = new URestaurantRoomDB() {
-            @Override
-            public URestaurantDAO uRestaurantDAO() {
+        //getting instance of database repository
+        restaurantRoomDBRepository = new RestaurantRoomDBRepository(application);
 
-                return null;
-            }
-
-            @NonNull
-            @Override
-            protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration config) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            protected InvalidationTracker createInvalidationTracker() {
-                return null;
-            }
-
-            @Override
-            public void clearAllTables() {
-
-            }
-        };
+        //populating list with 0
+        //here we will have a list with the size of getItemCount, populated with 0
         qty.add(position,0);
         qtyMatriz.add(0);//used to populate qty after cleared
+
+        //formatting the price to locale format used on device
         NumberFormat myCurrencyFormatted = NumberFormat.getCurrencyInstance();
         String price = myCurrencyFormatted.format(menuItemList.get(position).getPrice());
 
@@ -106,32 +86,41 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
                 //Save the position of the current selected item
                 selected = position;
 
+                //clear list when other item is selected
                 if(selected!=lastSelected){
                     qty.clear();
                     qty.addAll(qtyMatriz);
                 }
+                //get the actual qty from the list
                 x = qty.get(position);
                 if(x>=0){
                     qty.add(position,x+1);
+
+                    //adding 1 to x because x starts with value equal 0
                     total = (x+1) * menuItemList.get(position).getPrice();
+                    //preparing data to be saved in database
                     cart = new TempCart(
                             menuItemList.get(position).getId(),
                             menuItemList.get(position).getName(),
                             x+1,
                             menuItemList.get(position).getPrice(),
-                            total
+                            total,
+                            position
 
                     );
-                    uRestaurantRoomDB.uRestaurantDAO().insert(cart);
+                    //saving data to room database
+                    restaurantRoomDBRepository.insert(cart);
+                    //updating list
                     cartList.add(position,cart);
-                    Log.d("ON_CLICK++","MATRIZ<<"+cartList.toString() + "  X = "+ x + " "+qty.toString());
+
+                    //updating textview
                     holder.tvQty.setText(String.valueOf(qty.get(position)));
                 };
 
             }
         });
 
-        holder.btMinus.setOnClickListener(new View.OnClickListener() {
+        holder.btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Save the position of the last selected item
@@ -139,34 +128,16 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
                 //Save the position of the current selected item
                 selected = position;
 
-                if(selected!=lastSelected){
                     qty.clear();
                     qty.addAll(qtyMatriz);
-                }
-                x = qty.get(position);
-                if(x>0){
+                    restaurantRoomDBRepository.delete(position,menuItemList.get(position).getId());
+                   // Log.d("ON_CLICK--","MATRIZ<<" + cartList.toString() + "  X = "+ x + " "+qty.toString());
+                    holder.tvQty.setText("0");
 
-                    Log.d("ON_CLICK--","X = "+ x);
-
-                    qty.add(position,x-1);
-
-                    total = x * menuItemList.get(position).getPrice();
-                    cart = new TempCart(
-                            menuItemList.get(position).getId(),
-                            menuItemList.get(position).getName(),
-                            x,
-                            menuItemList.get(position).getPrice(),
-                            total
-
-                    );
-                    cartList.add(position,cart);
-                    Log.d("ON_CLICK++","MATRIZ<<"+cartList.toString() + "  X = "+ x + " "+qty.toString());
-                    holder.tvQty.setText(String.valueOf(qty.get(position)));
-                };
             }
         });
 
-
+        //getting image
         Picasso.get()
 
                 .load(menuItemList.get(position).getImage_url())
@@ -181,7 +152,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView tvNome,tvQty,tvDescription,tvPrice;
-        Button btMinus,btPlus;
+        Button btDelete,btPlus;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -190,7 +161,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
             tvNome = itemView.findViewById(R.id.tvMenuItemName);
             tvPrice = itemView.findViewById(R.id.tvMenuItemPrice);
             tvQty = itemView.findViewById(R.id.tvMenuitemQty);
-            btMinus = itemView.findViewById(R.id.btMenuItemMinus);
+            btDelete = itemView.findViewById(R.id.btMenuItemDelete);
             btPlus = itemView.findViewById(R.id.btMenuItemPlus);
 
 

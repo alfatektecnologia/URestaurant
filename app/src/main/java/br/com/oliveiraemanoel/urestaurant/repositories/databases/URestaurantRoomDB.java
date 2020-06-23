@@ -25,7 +25,7 @@ import br.com.oliveiraemanoel.urestaurant.repositories.daos.URestaurantDAO;
         Restaurant.class,
         User.class,
         TempCart.class,
-        UMenu.class},version = 2)
+        UMenu.class},version = 3)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class URestaurantRoomDB extends RoomDatabase {
 
@@ -35,7 +35,8 @@ public abstract class URestaurantRoomDB extends RoomDatabase {
     public static synchronized URestaurantRoomDB getInstance(Context context){
 
         if(INSTANCE==null){
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),URestaurantRoomDB.class,"restaurant_database")
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                    URestaurantRoomDB.class,"restaurant_database")
                     .fallbackToDestructiveMigration()
                     .addCallback(uRestaurantRoomDBCallback)
                     .build();

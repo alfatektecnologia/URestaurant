@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 
 import br.com.oliveiraemanoel.urestaurant.models.Item;
+import br.com.oliveiraemanoel.urestaurant.models.TempCart;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.repositories.RestaurantRoomDBRepository;
@@ -46,6 +47,10 @@ public class MenuViewModel extends AndroidViewModel {
     //order
     private MutableLiveData<Integer> integerMutableLiveData;
 
+    //TempCart
+    private LiveData<List<TempCart>> tempCartLiveData;
+
+
     //repository
     private RestaurantRoomDBRepository restaurantRoomDBRepository;
     private RestaurantWebRepository restaurantWebRepository;
@@ -60,12 +65,16 @@ public class MenuViewModel extends AndroidViewModel {
         restau = restaurantWebRepository.getRestaurant();
         mAllMenu =  restaurantRoomDBRepository.getAll();
         restaurantLiveData = restaurantRoomDBRepository.getAllRestaurants();
+        tempCartLiveData = restaurantRoomDBRepository.getAllCart();
     }
 
     //getting all data from menu
     public LiveData<List<UMenu>> getAll() {
         return mAllMenu;
     }
+
+    //getting all data from tempCart
+    public LiveData<List<TempCart>> getAllCart(){return  tempCartLiveData;}
 
     //just testing...
     public LiveData<Integer> setInteger(Integer i){

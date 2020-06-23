@@ -3,10 +3,11 @@ package br.com.oliveiraemanoel.urestaurant.repositories;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import androidx.lifecycle.LiveData;
+
 import java.util.List;
 
-import br.com.oliveiraemanoel.urestaurant.models.Cart;
 import br.com.oliveiraemanoel.urestaurant.models.Restaurant;
 import br.com.oliveiraemanoel.urestaurant.models.TempCart;
 import br.com.oliveiraemanoel.urestaurant.models.UMenu;
@@ -39,7 +40,7 @@ public class RestaurantRoomDBRepository {
         try {
             new RestaurantRoomDBRepository.insertAsyncTaskRestaurant(uRestaurantDAO).execute(restaurants);
         }catch (Exception e){
-            Log.d("RestauRoomDbRepository","getAllRestaurant_error "+e.toString());
+            Log.d("RoomDbRepository","insertItemsRestaurant_error "+e.toString());
         }
 
     }
@@ -57,7 +58,7 @@ public class RestaurantRoomDBRepository {
             try {
                 mAsyncTaskDao.insert(params[0]);
             }catch (Exception e){
-                Log.d("MenuRoomDbRepository","doInBackground_error "+e.toString());
+                Log.d("RoomDbRepository","doInBackground_error "+e.toString());
 
             }
 
@@ -70,7 +71,7 @@ public class RestaurantRoomDBRepository {
         try {
             new insertAsyncTaskMenu(uRestaurantDAO).execute(menus);
         }catch (Exception e){
-            Log.d("MenuRoomDbRepository","getAll_error "+e.toString());
+            Log.d("RoomDbRepository","insertItemsMenu_error "+e.toString());
         }
 
     }
@@ -88,7 +89,7 @@ public class RestaurantRoomDBRepository {
             try {
                 mAsyncTaskDao.insertItems(params[0]);
             }catch (Exception e){
-                Log.d("MenuRoomDbRepository","doInBackground_error "+e.toString());
+                Log.d("RoomDbRepository","InsertItemsMenu_doInBackground_error "+e.toString());
 
             }
 
@@ -101,7 +102,7 @@ public class RestaurantRoomDBRepository {
         try {
             new insertAsyncTaskCart(uRestaurantDAO).execute(cart);
         }catch (Exception e){
-            Log.d("RestauRoomDbRepository","getAllRestaurant_error "+e.toString());
+            Log.d("RoomDbRepository","insertTempCart_error "+e.toString());
         }
 
     }
@@ -119,11 +120,75 @@ public class RestaurantRoomDBRepository {
             try {
                 mAsyncTaskDao.insert(params[0]);
             }catch (Exception e){
-                Log.d("MenuRoomDbRepository","doInBackground_error "+e.toString());
+                Log.d("RoomDbRepository","doInBackground_error "+e.toString());
 
             }
 
             return null;
         }
     }
+
+    public void deleteAll(){
+        try {
+            new insertAsyncTaskDeleteCart(uRestaurantDAO).execute();
+        }catch (Exception e){
+            Log.d("RoomDbRepository","deleteAllCart_error "+e.toString());
+        }
+
+    }
+
+    private static class insertAsyncTaskDeleteCart extends AsyncTask<TempCart, Void, Void> {
+
+        private URestaurantDAO mAsyncTaskDao;
+
+        insertAsyncTaskDeleteCart(URestaurantDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final TempCart... params) {
+            try {
+                mAsyncTaskDao.deleteAllTempCart();
+            }catch (Exception e){
+                Log.d("RoomDbRepository","doInBackground_error "+e.toString());
+
+            }
+
+            return null;
+        }
+    }
+
+    public void delete(int index,int itemId){
+        try {
+            new insertAsyncTaskDelete(uRestaurantDAO).execute(index,itemId);
+        }catch (Exception e){
+            Log.d("RoomDbRepository","deleteAllCart_error "+e.toString());
+        }
+
+    }
+
+    private static class insertAsyncTaskDelete extends AsyncTask<Integer, Void, Void> {
+
+        private URestaurantDAO mAsyncTaskDao;
+
+        insertAsyncTaskDelete(URestaurantDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer ... integers) {
+            try {
+                mAsyncTaskDao.delete(integers[0],integers[1]);
+            }catch (Exception e){
+                Log.d("RoomDbRepository","doInBackground_error "+e.toString());
+
+            }
+
+            return null;
+        }
+
+
+    }
+
+
 }

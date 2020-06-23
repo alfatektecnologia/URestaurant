@@ -58,14 +58,15 @@ public interface URestaurantDAO {
     @Query("DELETE FROM temp_table")
     void deleteAllTempCart();
 
+
     @Insert(onConflict = REPLACE)
     void insert(TempCart tempCart);
 
     @Update
     void update(TempCart tempCart);
 
-    @Delete
-    void delete(TempCart tempCart);
+    @Query("DELETE FROM temp_table WHERE indice = :indice AND itemId = :itemId")
+    void delete(int indice,int itemId);
 
 
     //Ordem

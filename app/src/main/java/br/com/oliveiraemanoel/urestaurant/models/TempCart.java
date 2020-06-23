@@ -12,13 +12,23 @@ public class TempCart {
     private int quantity;
     private double value;
     private double total;
+    private int indice;
 
-    public TempCart(int itemId, String name, int quantity, double value, double total) {
+    public TempCart(int itemId, String name, int quantity, double value, double total,int indice) {
         this.itemId = itemId;
         this.name = name;
         this.quantity = quantity;
         this.value = value;
         this.total = total;
+        this.indice = indice;
+    }
+
+    public int getIndice() {
+        return indice;
+    }
+
+    public void setIndice(int indice) {
+        this.indice = indice;
     }
 
     public int getId() {
